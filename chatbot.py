@@ -11,7 +11,7 @@ s = "Hello, I am an AI chatbot"
 # Define the function for the AI chatbot
 def ai(prompt):
     # Set the OpenAI API key
-    openai.api_key = "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"
+    openai.api_key = "YOUR_API_KEY"
     
     # Set the text variable to store the response
     text = f"OpenAI response for Prompt: {prompt}\n****************************************\n\n"
