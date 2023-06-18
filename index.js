@@ -1,7 +1,99 @@
-//Required for running the server
 
+
+// Import required modules  
+const { Configuration, OpenAIApi } = require("openai");
+const { SpeechClient } = require('@google-cloud/speech');
+const { TextToSpeechClient } = require('@google-cloud/text-to-speech');
 const puppeteer = require('puppeteer');
 const { spawn } = require('child_process');
+// Google Cloud Speech-to-Text configuration
+const speechClient = new SpeechClient({
+  projectId: 'your_project_id',
+  keyFilename: 'path/to/service-account-key.json',
+});
+
+// Google Cloud Text-to-Speech configuration
+const textToSpeechClient = new TextToSpeechClient({
+  projectId: 'your_project_id',
+  keyFilename: 'path/to/service-account-key.json',
+});
+
+// OpenAI GPT-3 configuration
+const openAiApiKey = 'your_openai_api_key';
+
+const configuration = new Configuration({
+  apiKey: openAiApiKey,
+});
+const openai = new OpenAIApi(configuration);
+
+// Process audio stream and convert speech to text
+async function convertSpeechToText(audioStream) {
+  const audio = {
+    content: audioStream,
+  };
+
+  const config = {
+    encoding: 'LINEAR16',
+    sampleRateHertz: 16000,
+    languageCode: 'en-US',
+  };
+
+  const request = {
+    audio: audio,
+    config: config,
+  };
+
+  const [response] = await speechClient.recognize(request);
+  const transcription = response.results.map((result) => result.alternatives[0].transcript).join('\n');
+
+  return transcription;
+}
+
+// Generate GPT-3 response
+
+
+
+// Generate GPT-3 response
+
+async function generateGpt3Response(text) {
+  const prompt = `You: Hi bot how are you? ${text}\nAI:`;
+
+  try {
+    const requestBody = {
+      model: "text-davinci-002",
+      prompt,
+      temperature: 0.6,
+      max_tokens: 100,
+    };
+
+    const response = await openai.createCompletion(requestBody);
+    const gpt3Response = response.choices[0].text.trim();
+
+    return gpt3Response;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
+  
+  
+  
+
+// Convert text to speech
+async function convertTextToSpeech(text) {
+  const request = {
+    input: { text },
+    voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
+    audioConfig: { audioEncoding: 'MP3' },
+  };
+
+  const [response] = await textToSpeechClient.synthesizeSpeech(request);
+  return response.audioContent;
+}
+
+
+
 
 
 // Join a Zoom meeting
@@ -120,9 +212,20 @@ async function joinZoomMeeting(meetingLink) {
       }
     }
 
+
+    // Function to handle form submission
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  // Get the input value from the text box
+  const meetingLinkInput = document.getElementById('meeting-link');
+  const meetingLink = meetingLinkInput.value;
+
+  // Call the bot function with the meeting link
+  bot(meetingLink);
+}
+
   
-//Change the meetingUrl to your meeting link
-  const meetingUrl = 'your_zoom_meeting_link';
-//Call the bot function
-  bot(meetingUrl);
-  
+// Attach form submission event listener
+const form = document.getElementById('meeting-form');
+form.addEventListener('submit', handleSubmit);
