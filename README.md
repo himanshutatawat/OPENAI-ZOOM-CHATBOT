@@ -11,7 +11,7 @@ This project demonstrates an integration of a chatbot with a Zoom meeting using 
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/zoom-meeting-chatbot.git`
+1. Clone the repository: `git clone https://github.com/himanshutatawat/OPENAI-ZOOM-CHATBOT.git`
 2. Navigate to the project directory: `cd zoom-meeting-chatbot`
 3. Install the required Node.js dependencies: `npm install`
 4. Install the required Python dependencies: `pip install -r requirements.txt`
